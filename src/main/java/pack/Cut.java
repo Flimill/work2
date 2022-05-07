@@ -113,10 +113,11 @@ public class Cut {
     }
 
     private void fileWrite(String carved) {
-        try (FileWriter writer = new FileWriter(outputFileName, true)) //файл перезаписывается
+        try (FileWriter writer = new FileWriter(outputFileName, true))
         {
+            if(new File(outputFileName).length() != 0)
+                writer.append("\n");
             writer.write(carved);
-            writer.append("\n");
         } catch (IOException ex) {
 
             System.out.println(ex.getMessage());

@@ -21,8 +21,7 @@ public class CutLauncher {
     private String range;
 
 
-    public CutLauncher() {
-    }
+
 
     public static void main(String[] args) {
         new CutLauncher().launch(args);
@@ -34,6 +33,8 @@ public class CutLauncher {
 
         try {
             parser.parseArgument(args);
+            if (flagW == flagC)
+                throw new NullPointerException();
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("java -jar wrk-1.0-SNAPSHOT-jar-with-dependencies.jar -c/-w -o OutputFileName -i InputFileName -r range");
