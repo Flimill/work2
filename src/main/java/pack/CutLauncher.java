@@ -1,12 +1,9 @@
 package pack;
 
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
-import java.io.Serializable;
 
 public class CutLauncher {
     @Option(name = "-w")
@@ -34,7 +31,7 @@ public class CutLauncher {
         try {
             parser.parseArgument(args);
             if (flagW == flagC)
-                throw new NullPointerException();
+                throw new CmdLineException("Необходим лишь один флаг -w или -c");
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("java -jar wrk-1.0-SNAPSHOT-jar-with-dependencies.jar -c/-w -o OutputFileName -i InputFileName -r range");
