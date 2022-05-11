@@ -1,5 +1,6 @@
 package pack;
 
+import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -8,11 +9,11 @@ import org.kohsuke.args4j.Option;
 public class CutLauncher {
     @Option(name = "-w")
     private boolean flagW;
-    @Option(name = "-c")
+    @Option(name = "-c", forbids = {"-w"})
     private boolean flagC;
     @Option(name = "-o")
     private String outputFileName;
-    @Option(name = "-i")
+    @Argument()
     private String inputFileName;
     @Option(name = "-r", required = true)
     private String range;
@@ -30,15 +31,13 @@ public class CutLauncher {
 
         try {
             parser.parseArgument(args);
-            if (flagW == flagC)
-                throw new CmdLineException("Необходим лишь один флаг -w или -c");
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("java -jar wrk-1.0-SNAPSHOT-jar-with-dependencies.jar -c/-w -o OutputFileName -i InputFileName -r range");
             parser.printUsage(System.err);
             return;
         }
-        Cut cuter = new Cut(flagW, flagC, outputFileName, inputFileName, range);
-        cuter.Cut();
+        Cut cuter = new Cut(flagC, outputFileName, inputFileName, range);
+        cuter.cut();
     }
 }

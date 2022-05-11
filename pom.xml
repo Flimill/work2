@@ -57,7 +57,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.1</version>
-            <scope>test</scope>
+            <scope>CutTest</scope>
         </dependency>
         <dependency>
             <groupId>no.tornado</groupId>
