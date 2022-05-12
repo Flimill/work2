@@ -1,6 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
-import pack.Cut;
+import pack.Cutter;
 
 
 import java.io.File;
@@ -8,23 +8,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class CutTest {
+public class CutterTest {
     private final String s = System.lineSeparator();
 
-    private static void assertFileContent(String name, String expectedContent) throws IOException {
-        String content = Files.readString(Paths.get(name));
-        File file = new File(name);
+    private static void assertFileContent(String expectedContent) throws IOException {
+        String content = Files.readString(Paths.get("files\\output1.txt"));
+        File file = new File("files\\output1.txt");
         file.delete();
         Assert.assertEquals(content, (expectedContent));
     }
 
     @Test
     public void UntilTheEndOfTheLine_CountByWords() throws IOException {
-        File test = new File("files\\output1.txt");
-        Cut cutter = new Cut(false, "files\\output1.txt",
+        new File("files\\output1.txt");
+        Cutter cutter = new Cutter(false, "files\\output1.txt",
                 "files\\input.txt", "6-");
         cutter.cut();
-        assertFileContent("files\\output1.txt",
+        assertFileContent(
                 "when I started really to play the guitar" + s +
                         "a musician" + s +
                         "the dream was so big" + s +
@@ -42,11 +42,11 @@ public class CutTest {
     }
     @Test
     public void FromTheBeginningOfTheLine_CountByWords() throws IOException {
-        File test = new File("files\\output1.txt");
-        Cut cutter = new Cut(false, "files\\output1.txt",
+        new File("files\\output1.txt");
+        Cutter cutter = new Cutter(false, "files\\output1.txt",
                 "files\\input.txt", "-6");
         cutter.cut();
-        assertFileContent("files\\output1.txt",
+        assertFileContent(
                 "When I was fifteen, sixteen when " + s +
                         "I definately wanted to become a " + s +
                         "It was almost impossible because the " + s +
@@ -64,11 +64,11 @@ public class CutTest {
     }
     @Test
     public void FromTheBeginningOfTheLine_SpellCount() throws IOException {
-        File test = new File("files\\output1.txt");
-        Cut cutter = new Cut(true, "files\\output1.txt",
+        new File("files\\output1.txt");
+        Cutter cutter = new Cutter(true, "files\\output1.txt",
                 "files\\input3.txt", "-4");
         cutter.cut();
-        assertFileContent("files\\output1.txt",
+        assertFileContent(
                 "abcd" + s +
                         "kjhk" + s +
                         "lkui" + s +
@@ -86,34 +86,43 @@ public class CutTest {
     }
     @Test
     public void OnTheInterval_SpellCount() throws IOException {
-        File test = new File("files\\output1.txt");
-        Cut cutter = new Cut(true, "files\\output1.txt",
+        new File("files\\output1.txt");
+        Cutter cutter = new Cutter(true, "files\\output1.txt",
                 "files\\input2.txt", "6-12");
         cutter.cut();
-        assertFileContent("files\\output1.txt",
+        assertFileContent(
                 "or not to ");
     }
     @Test
     public void GoingAbroad() throws IOException {
-        File test = new File("files\\output1.txt");
-        Cut cutter = new Cut(false, "files\\output1.txt",
+        new File("files\\output1.txt");
+        Cutter cutter = new Cutter(false, "files\\output1.txt",
                 "files\\input2.txt", "-30");
         cutter.cut();
-        assertFileContent("files\\output1.txt",
-                "To be, or not to be");
+        assertFileContent("To be, or not to be");
     }
     @Test
     public void InvalidRange() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            File test = new File("files\\output1.txt");
-            Cut cutter = new Cut(false, "files\\output1.txt",
+            new File("files\\output1.txt");
+            Cutter cutter = new Cutter(false, "files\\output1.txt",
                     "files\\input2.txt", "1234");
-            cutter.cut();});
+            cutter.cut();
+        });
     }
 
     @Test
     public void CutOutTest() {
-        String expectedString = Cut.cutOut("abcdefghijklmnopqrstuvwxyz", 3, 6, true);
+        String expectedString = Cutter.cutOut("abcdefghijklmnopqrstuvwxyz", 3, 6, true);
         Assert.assertEquals(expectedString, "cdef");
+    }
+    @Test
+    public void InputFileIsEmpty() throws IOException {
+        Assert.assertThrows(NullPointerException.class, () -> {
+            new File("files\\output1.txt");
+        Cutter cutter = new Cutter(false, "files\\output1.txt",
+                "files\\input4.txt", "-2");
+        cutter.cut();
+        });
     }
 }

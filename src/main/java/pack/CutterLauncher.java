@@ -6,7 +6,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 
-public class CutLauncher {
+public class CutterLauncher {
     @Option(name = "-w")
     private boolean flagW;
     @Option(name = "-c", forbids = {"-w"})
@@ -22,7 +22,7 @@ public class CutLauncher {
 
 
     public static void main(String[] args) {
-        new CutLauncher().launch(args);
+        new CutterLauncher().launch(args);
     }
 
 
@@ -37,7 +37,7 @@ public class CutLauncher {
             parser.printUsage(System.err);
             return;
         }
-        Cut cuter = new Cut(flagC, outputFileName, inputFileName, range);
-        cuter.cut();
+        Cutter cutter = new Cutter(this.flagC, this.outputFileName, this.inputFileName, this.range);
+        cutter.cut();
     }
 }

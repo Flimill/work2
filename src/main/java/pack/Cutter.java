@@ -2,22 +2,12 @@ package pack;
 
 import java.io.IOException;
 import java.io.*;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Cut {
-    private final boolean flagC;
-    private final String outputFileName;
-    private final String inputFileName;
-    private final String range;
-
-
-    public Cut(boolean flagC, String outputFileName, String inputFileName, String range) {
-        this.flagC = flagC;
-        this.outputFileName = outputFileName;
-        this.inputFileName = inputFileName;
-        this.range = range;
-    }
+public record Cutter(boolean flagC, String outputFileName, String inputFileName,
+                     String range) {
 
 
     private static Integer search(Matcher m) {
@@ -37,39 +27,45 @@ public class Cut {
         } else if (Pattern.matches("\\d+-", range)) {
             start = search(m);
         } else throw new IllegalArgumentException("интервал должен быть вида -K, N- или N-K, где N и K целые числа");
-
         if (inputFileName == null)
             processInputConsole(start, end);
         else processInputFile(start, end);
-        System.out.println(end);
     }
 
     private void processInputConsole(int start, int end) {
-        try {
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String line = reader.readLine();
-            write(cutOut(line, start, end, flagC));
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        if (line == null) {
+            scanner.close();
+            throw new NullPointerException("Входная" + " строка пуста");
         }
+        while (!line.equals("close")) {
+            write(cutOut(line, start, end, flagC));
+            line = scanner.nextLine();
+        }
+        scanner.close();
     }
 
 
     private void processInputFile(int start, int end) {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line = reader.readLine();
+            if (line == null) {
+                reader.close();
+                throw new NullPointerException("Входной файл пуст");
+            }
             while (line != null) {
                 write(cutOut(line, start, end, flagC));
                 line = reader.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(0);
         }
     }
 
-    public static String cutOut(String line, int start, int end, boolean flagC){
+    public static String cutOut(String line, int start, int end, boolean flagC) {
         int count = 0;
         StringBuilder subString = new StringBuilder();
         int i = 0;
@@ -80,7 +76,7 @@ public class Cut {
                     count++;
                 if (count >= start && (count <= end || end == 0))
                     subString.append(c);
-                if (count > end && end!=0)
+                if (count > end && end != 0)
                     break;
                 i++;
             }
@@ -95,7 +91,7 @@ public class Cut {
                     word = false;
                 if (count >= start && (count <= end || end == 0))
                     subString.append(c);
-                if (count > end && end!=0)
+                if (count > end && end != 0)
                     break;
                 i++;
             }
@@ -110,13 +106,13 @@ public class Cut {
     }
 
     private void fileWrite(String carved) {
-        try (FileWriter writer = new FileWriter(outputFileName, true))
-        {
-            if(new File(outputFileName).length() != 0)
+        try (FileWriter writer = new FileWriter(outputFileName, true)) {
+            if (new File(outputFileName).length() != 0)
                 writer.append(System.lineSeparator());
             writer.write(carved);
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(0);
         }
     }
 
